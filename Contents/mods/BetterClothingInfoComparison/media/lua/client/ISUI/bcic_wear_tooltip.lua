@@ -1,3 +1,6 @@
+-- author: Fred Davin
+-- based on: 41+
+
 ISInventoryPaneContextMenu.formatWearTooltip = function(tooltip, labelWidth, previous, new, multiplicationFactor,
     labelTooltip, invertHC, lineBefore)
     local newLine = lineBefore and " <LINE>" or "";
