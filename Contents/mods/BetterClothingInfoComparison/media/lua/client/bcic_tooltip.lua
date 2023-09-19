@@ -1,4 +1,5 @@
 -- author: Bruno Menezes
+-- version: 0.1a (2023-09-19)
 -- based on: 41+
 
 require "ISUI/ISToolTipInv"
@@ -9,41 +10,36 @@ local font_name = UIFont.Medium;
 local font_size = getCore():getOptionTooltipFont();
 
 if font_size == "Large" then
-	PX_LETTER = 9;
-	font_name = UIFont.Large;
+    PX_LETTER = 9;
+    font_name = UIFont.Large;
 elseif font_size == "Small" then
-	PX_LETTER = 6;
-	font_name = UIFont.Small;
+    PX_LETTER = 6;
+    font_name = UIFont.Small;
 end
 
 -- get UI language and add fix for wider Russian fonts
 local current_lang = tostring(Translator.getLanguage());
 if current_lang == "RU" then
-	if font_size == "Large" then
-		PX_LETTER = 10;
-	elseif font_size == "Small" then
-		PX_LETTER = 6.5;
-	end
+    if font_size == "Large" then
+        PX_LETTER = 10;
+    elseif font_size == "Small" then
+        PX_LETTER = 6.5;
+    end
 end
 
--- get line height for user-chosen font
-local lh = getTextManager():getFontFromEnum(font_name):getLineHeight();
-
+local lineHeight = getTextManager():getFontFromEnum(font_name):getLineHeight();
 local y_position = 0;
 local label_x_position = 5;
 local value_x_position = (string.len(getText("Tooltip_RunSpeedModifier")) + 3) * PX_LETTER;
-
--- store previous rendering function in a local variable for compatibility with other mods
 local original_render = ISToolTipInv.render;
 
-function ISToolTipInv.bcic_render()
-    
-	if not self.item:IsClothing() then
-        -- render the original method if the item isn't Clothing
-		original_render(self);
-		return;
-	end
-	
+function ISToolTipInv:bcic_render()
+    -- render the original method if the item isn't Clothing
+    if not self.item:IsClothing() then
+        original_render(self);
+        return;
+    end
+
     -- we render the tool tip for inventory item only if there's no context menu showed
     if not ISContextMenu.instance or not ISContextMenu.instance.visibleCheck then
         local mx = getMouseX() + 24;
@@ -57,8 +53,8 @@ function ISToolTipInv.bcic_render()
                 my = self.anchorBottomLeft.y
             end
         end
-        
-        self.tooltip:setX(mx+11);
+
+        self.tooltip:setX(mx + 11);
         self.tooltip:setY(my);
 
         self.tooltip:setWidth(50)
@@ -77,11 +73,13 @@ function ISToolTipInv.bcic_render()
             self:adjustPositionToAvoidOverlap({ x = mx - 24 * 2, y = my - 24 * 2, width = 24 * 2, height = 24 * 2 });
         end
 
-        self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
-        self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g, self.borderColor.b);
+        self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r,
+            self.backgroundColor.g, self.backgroundColor.b);
+        self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
+            self.borderColor.b);
 
         if self.item:IsClothing() then
-            tw, th = renderTooltipClothing(self.tooltip, self.item, tw, th);
+            tw, th = RenderTooltipClothing(self.tooltip, self.item, tw, th);
         end
 
         self.tooltip:setX(math.max(0, math.min(mx + 11, maxX - tw - 1)));
@@ -102,20 +100,20 @@ end
 
 ISToolTipInv.render = ISToolTipInv.bcic_render;
 
-function renderTooltipClothing(tooltipContext, itemContext, tw, th)
-    y_position = tooltipContext:getHeight() + lh * 0.2;
+function RenderTooltipClothing(tooltipContext, itemContext, tw, th)
+    y_position = tooltipContext:getHeight() + lineHeight * 0.2;
 
     -- item statistcs
-    renderInfo("Item Statistcs", nil, tooltipContext);
+    RenderInfo("Item Statistcs", nil, tooltipContext);
 
     -- condition
-    renderInfo("Tooltip_weapon_Condition", itemContext:getCondition(), tooltipContext);
+    RenderInfo("Tooltip_weapon_Condition", itemContext:getCondition(), itemContext.getConditionMax(), tooltipContext);
 
     -- insulation
-    renderInfo("Tooltip_item_Insulation", itemContext:getInsulation(), tooltipContext);
+    RenderInfo("Tooltip_item_Insulation", itemContext:getInsulation(), tooltipContext);
 
     --wind resistance
-    renderInfo("Tooltip_item_Windresist", itemContext:getWindresistance(), tooltipContext);
+    RenderInfo("Tooltip_item_Windresist", itemContext:getWindresistance(), tooltipContext);
 
     -- adjust window
     th = y_position;
@@ -125,20 +123,34 @@ function renderTooltipClothing(tooltipContext, itemContext, tw, th)
     return tw, th;
 end
 
-function renderInfo(label, value, tooltipContext)
+function RenderInfo(label, value1, value2, tooltipContext)
     y_position = y_position + 15;
     label = getText(label);
-    value = getValue(value);
+    value1 = GetValue(value1);
+    value2 = GetValue(value2);
 
-    if value ~= "" then
+    if value1 ~= "" then
         label = label .. ":";
     end
 
+    local value = "";
+
+    if value1 ~= nil and value2 ~= nil then
+        value = value1/value2
+    end 
     tooltipContext:DrawText(tooltipContext:getFont(), label, label_x_position, y_position, 1, 1, 0.8, 1);
     tooltipContext:DrawText(tooltipContext:getFont(), value, value_x_position, y_position, 1, 1, 0.8, 1);
 end
 
-function getValue(value)
+function GetValue(value)
+    if value == nil then
+        return nil;
+    else
+        return tostring(math.floor((value * 100) + 0.5));
+    end
+end
+
+function GetValue(value1, value2)
     if value == nil then
         return "";
     else
