@@ -104,16 +104,16 @@ function RenderTooltipClothing(tooltipContext, itemContext, tw, th)
     y_position = tooltipContext:getHeight() + lineHeight * 0.2;
 
     -- item statistcs
-    RenderInfo("Item Statistcs", nil, tooltipContext);
+    RenderInfo("Item Statistcs", nil, nil, tooltipContext);
 
     -- condition
-    RenderInfo("Tooltip_weapon_Condition", itemContext:getCondition(), itemContext.getConditionMax(), tooltipContext);
+    RenderInfo("Tooltip_weapon_Condition", itemContext:getCondition(), itemContext:getConditionMax(), tooltipContext);
 
     -- insulation
-    RenderInfo("Tooltip_item_Insulation", itemContext:getInsulation(), tooltipContext);
+    RenderInfo("Tooltip_item_Insulation", itemContext:getInsulation(), nil, tooltipContext);
 
     --wind resistance
-    RenderInfo("Tooltip_item_Windresist", itemContext:getWindresistance(), tooltipContext);
+    RenderInfo("Tooltip_item_Windresist", itemContext:getWindresistance(), nil, tooltipContext);
 
     -- adjust window
     th = y_position;
@@ -129,15 +129,19 @@ function RenderInfo(label, value1, value2, tooltipContext)
     value1 = GetValue(value1);
     value2 = GetValue(value2);
 
-    if value1 ~= "" then
+    local value = "";
+    
+    if value1 ~= nil and value2 ~= nil then
         label = label .. ":";
+        value = tostring(value1) .. " / " .. tostring(value2);
+    elseif value1 ~= nil and value2 == nil then
+        label = label .. ":";
+        value = value1;
+    elseif value1 == nil and value2 ~= nil then
+        label = label .. ":";
+        value = value2;
     end
 
-    local value = "";
-
-    if value1 ~= nil and value2 ~= nil then
-        value = value1/value2
-    end 
     tooltipContext:DrawText(tooltipContext:getFont(), label, label_x_position, y_position, 1, 1, 0.8, 1);
     tooltipContext:DrawText(tooltipContext:getFont(), value, value_x_position, y_position, 1, 1, 0.8, 1);
 end
@@ -145,15 +149,9 @@ end
 function GetValue(value)
     if value == nil then
         return nil;
-    else
+    elseif value < 1 then
         return tostring(math.floor((value * 100) + 0.5));
-    end
-end
-
-function GetValue(value1, value2)
-    if value == nil then
-        return "";
     else
-        return tostring(math.floor((value * 100) + 0.5));
+        return value;
     end
 end
