@@ -1,9 +1,9 @@
--- author: Fred Davin
--- version: 0.1a (2023-09-19)
+-- author: Bruno Menezes & Fred Davin
+-- version: 0.2a (2023-09-25)
 -- based on: 41+
 
 ISInventoryPaneContextMenu.formatWearTooltip = function(tooltip, labelWidth, previous, new, multiplicationFactor,
-    labelTooltip, invertHC, lineBefore)
+                                                        labelTooltip, invertHC, lineBefore)
     local newLine = lineBefore and " <LINE>" or "";
     local hc = {
         getR = function()
