@@ -1,7 +1,6 @@
 -- author: Bruno Menezes & Fred Davin
 -- version: 0.2a (2023-09-30)
 -- based on: 41+
-
 require "ISUI/ISToolTipInv"
 require "bcic_TooltipClothing"
 
@@ -36,15 +35,15 @@ function bcic_DoTooltip(objTooltip, item)
     elseif var16 then
         var10001 = item:getCleanString(item:getEquippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getUnequippedWeight()) .. " " ..
-            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+                            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     elseif item:getAttachedSlot() > -1 then
         var10001 = item:getCleanString(item:getHotbarEquippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getUnequippedWeight()) .. " " ..
-            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+                            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     else
         var10001 = item:getCleanString(item:getUnequippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getEquippedWeight()) .. " " ..
-            getText("Tooltip_item_Equipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+                            getText("Tooltip_item_Equipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     end
 
     DoTooltipClothing(objTooltip, item, layoutTooltip)
@@ -52,23 +51,23 @@ function bcic_DoTooltip(objTooltip, item)
     if getCore():getOptionShowItemModInfo() and not item:isVanilla() then
         layout = layoutTooltip:addItem();
         layout:setLabel("Mod: " .. item:getModName(), 0.392, 0.584, 0.929, 1.0);
-        local itemInfo = WorldDictionary.getItemInfoFromID(item:getRegistry_id()); -- fudeo nao achei
-        if itemInfo ~= nil and itemInfo:getModOverrides() ~= nil then
-            layout = layoutTooltip:addItem();
-            if itemInfo:getModOverrides():size() == 1 then
-                layout:setLabel("This item overrides: " ..
-                    WorldDictionary:getModNameFromID("" .. itemInfo:getModOverrides():get(0)), 0.5, 0.5,
-                    0.5, 1.0);
-            else
-                layout:setLabel("This item overrides:", 0.5, 0.5, 0.5, 1.0);
+        -- local itemInfo = WorldDictionary.getItemInfoFromID(item:getRegistry_id()); -- fudeo nao achei
+        -- if itemInfo ~= nil and itemInfo:getModOverrides() ~= nil then
+        --     layout = layoutTooltip:addItem();
+        --     if itemInfo:getModOverrides():size() == 1 then
+        --         layout:setLabel("This item overrides: " ..
+        --             WorldDictionary:getModNameFromID("" .. itemInfo:getModOverrides():get(0)), 0.5, 0.5,
+        --             0.5, 1.0);
+        --     else
+        --         layout:setLabel("This item overrides:", 0.5, 0.5, 0.5, 1.0);
 
-                for i = 0, itemInfo:getModOverrides():size() - 1 do
-                    layout = layoutTooltip:addItem();
-                    layout:setLabel(" - " .. WorldDictionary:getModNameFromID("" .. itemInfo:getModOverrides():get(i)),
-                        0.5, 0.5, 0.5, 1.0);
-                end
-            end
-        end
+        --         for i = 0, itemInfo:getModOverrides():size() - 1 do
+        --             layout = layoutTooltip:addItem();
+        --             layout:setLabel(" - " .. WorldDictionary:getModNameFromID("" .. itemInfo:getModOverrides():get(i)),
+        --                 0.5, 0.5, 0.5, 1.0);
+        --         end
+        --     end
+        -- end
     end
 
     if item:getTooltip() ~= nil then
@@ -117,11 +116,11 @@ function SetItemWithComparison(newItemValue, previousItemValue, label, layoutIte
             layoutItem:setLabel(getText(label) .. ":", 1.0, 1.0, 0.8, 1.0);
             if newItemValue > previousItemValue then
                 layoutItem:setValue(string.format("%." .. decimal .. "f", newItemValue) .. " (+" ..
-                    string.format("%." .. decimal .. "f", newItemValue - previousItemValue) .. ")",
+                                        string.format("%." .. decimal .. "f", newItemValue - previousItemValue) .. ")",
                     colorZero, colorOne, 0.0, 1.0);
             else
                 layoutItem:setValue(string.format("%." .. decimal .. "f", newItemValue) .. " (-" ..
-                    string.format("%." .. decimal .. "f", previousItemValue - newItemValue) .. ")",
+                                        string.format("%." .. decimal .. "f", previousItemValue - newItemValue) .. ")",
                     colorOne, colorZero, 0.0, 1.0);
             end
         end
