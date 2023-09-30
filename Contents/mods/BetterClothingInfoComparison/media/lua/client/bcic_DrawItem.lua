@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-25)
+-- version: 0.2a (2023-09-30)
 -- based on: 41+
 
 DrawItem = {}
@@ -20,9 +20,24 @@ function DrawItem:New(newItemValue, previousItemValue, label, layoutItem, layout
 end
 
 function DrawItem:Render(draw)
-    if draw and (self.newItemValue ~= 1 and (self.label ~= "Tooltip_RunSpeedModifier" or self.label ~= "Tooltip_CombatSpeedModifier")) then
+    if draw then
+        if 'string' == type(self.newItemValue) then
+            DrawItemAsText(self);
+        elseif 'number' == type(self.newItemValue) then
+            DrawItemAsNumber(self);
+        end
+    end
+end
+
+function DrawItemAsText(self)
+    SetItemInfoAsText(self.newItemValue, self.label, self.layoutItem, self.layoutTooltip);
+end
+
+function DrawItemAsNumber(self)
+    if self.newItemValue ~= 1 and (self.label ~= "Tooltip_RunSpeedModifier" or self.label ~= "Tooltip_CombatSpeedModifier") then
         if self.isEquipped and self.newItemValue ~= 0.0 then
-            SetItemWithoutComparison(self.newItemValue, self.label, self.layoutItem, self.layoutTooltip, self.decimal);
+            SetItemWithoutComparison(self.newItemValue, self.label, self.layoutItem, self.layoutTooltip, self
+                .decimal);
         elseif not self.isEquipped then
             SetItemWithComparison(self.newItemValue, self.previousItemValue, self.label, self.layoutItem,
                 self.layoutTooltip, self.decimal, self.reverse);

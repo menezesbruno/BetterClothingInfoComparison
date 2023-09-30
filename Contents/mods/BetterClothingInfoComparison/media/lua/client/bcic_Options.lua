@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-25)
+-- version: 0.2a (2023-09-30)
 -- based on: 41+
 
 -- These are the settings.
@@ -27,6 +27,7 @@ BCIC_SETTINGS = {
         ShowBulletDefenseComparison       = true,
         ShowRunSpeedModifierComparison    = true,
         ShowCombatSpeedModifierComparison = true,
+        ShowClothingMaterial              = true
     },
     names = {
         -- Progress Bar
@@ -50,7 +51,8 @@ BCIC_SETTINGS = {
         ShowScratchDefenseComparison = "Show Scratch Defense Comparison",
         ShowBulletDefenseComparison = "Show Bullet Defense Comparison",
         ShowRunSpeedModifierComparison = "Show Run Speed Modifier Comparison",
-        ShowCombatSpeedModifierComparison = "Show Combat Speed Modifier Comparison"
+        ShowCombatSpeedModifierComparison = "Show Combat Speed Modifier Comparison",
+        ShowClothingMaterial = "Show Clothing Material"
     },
     mod_id = "BetterClothingInfoComparison",
     mod_shortname = "Better Clothing Info Comparison",
@@ -82,4 +84,5 @@ if ModOptions and ModOptions.getInstance then
     ShowBulletDefenseComparison = settings:getData("showBulletDefenseComparison");
     ShowRunSpeedModifierComparison = settings:getData("showRunSpeedModifierComparison");
     ShowCombatSpeedModifierComparison = settings:getData("showCombatSpeedModifierComparison");
+    ShowClothingMaterial = settings:getData("ShowClothingMaterial");
 end

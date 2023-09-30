@@ -1,9 +1,9 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-25)
+-- version: 0.2a (2023-09-30)
 -- based on: 41+
 
 require "ISUI/ISToolTipInv"
-require "bcic_tooltip_clothing"
+require "bcic_TooltipClothing"
 
 local original_render = ISToolTipInv.render;
 
@@ -134,6 +134,12 @@ function SetItemWithoutComparison(newItemValue, label, layoutItem, layoutTooltip
     layoutItem = layoutTooltip:addItem();
     layoutItem:setLabel(getText(label) .. ":", 1.0, 1.0, 0.8, 1.0);
     layoutItem:setValue(string.format("%." .. decimal .. "f", newItemValue), 1.0, 1.0, 1.0, 1.0);
+end
+
+function SetItemInfoAsText(newItemValue, label, layoutItem, layoutTooltip)
+    layoutItem = layoutTooltip:addItem();
+    layoutItem:setLabel(getText(label) .. ":", 1.0, 1.0, 0.8, 1.0);
+    layoutItem:setValue(newItemValue, 1.0, 1.0, 1.0, 1.0);
 end
 
 function ISToolTipInv:bcic_render()
