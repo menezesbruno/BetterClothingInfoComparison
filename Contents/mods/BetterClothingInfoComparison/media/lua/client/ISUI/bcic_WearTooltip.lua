@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-25)
+-- version: 0.2a (2023-09-30)
 -- based on: 41+
 
 ISInventoryPaneContextMenu.formatWearTooltip = function(tooltip, labelWidth, previous, new, multiplicationFactor,

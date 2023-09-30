@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-25)
+-- version: 0.2a (2023-09-30)
 -- based on: 41+
 
 function DoTooltipClothing(objTooltip, item, layoutTooltip)
@@ -20,6 +20,7 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
     local newItemBulletDefense = item:getBulletDefense();
     local newItemRunSpeedModifier = item:getRunSpeedModifier();
     local newItemCombatSpeedModifier = item:getCombatSpeedModifier();
+    local newItemClothingMaterial = item:getFabricType();
 
     -- Previous Item
     local previousItemHolesNumber = 0.0;
@@ -122,6 +123,9 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
     local combatSpeedModifier = DrawItem:New(newItemCombatSpeedModifier, previousItemCombatSpeedModifier,
         "Tooltip_CombatSpeedModifier", layoutItem, layoutTooltip, 2, false, item:isEquipped());
 
+    local clothingMaterial = DrawItem:New(newItemClothingMaterial, nil, "IGUI_ItemCat_Material", layoutItem,
+        layoutTooltip, nil, nil, nil);
+
     holesComparison:Render(BCIC_SETTINGS.options.ShowHolesComparison);
     conditionComparison:Render(BCIC_SETTINGS.options.ShowConditionComparison);
     insulationComparison:Render(BCIC_SETTINGS.options.ShowInsulationComparison);
@@ -132,4 +136,5 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
     bulletDefenseComparison:Render(BCIC_SETTINGS.options.ShowBulletDefenseComparison);
     runSpeedModifier:Render(BCIC_SETTINGS.options.ShowRunSpeedModifierComparison);
     combatSpeedModifier:Render(BCIC_SETTINGS.options.ShowCombatSpeedModifierComparison);
+    clothingMaterial:Render(BCIC_SETTINGS.options.ShowClothingMaterial);
 end
