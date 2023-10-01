@@ -1,6 +1,7 @@
 -- author: Bruno Menezes & Fred Davin
 -- version: 0.2a (2023-09-30)
 -- based on: 41+
+
 require "ISUI/ISToolTipInv"
 require "bcic_TooltipClothing"
 
@@ -35,15 +36,15 @@ function bcic_DoTooltip(objTooltip, item)
     elseif var16 then
         var10001 = item:getCleanString(item:getEquippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getUnequippedWeight()) .. " " ..
-                            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     elseif item:getAttachedSlot() > -1 then
         var10001 = item:getCleanString(item:getHotbarEquippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getUnequippedWeight()) .. " " ..
-                            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+            getText("Tooltip_item_Unequipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     else
         var10001 = item:getCleanString(item:getUnequippedWeight());
         layout:setValue(var10001 .. "    (" .. item:getCleanString(item:getEquippedWeight()) .. " " ..
-                            getText("Tooltip_item_Equipped") .. ")", 1.0, 1.0, 1.0, 1.0);
+            getText("Tooltip_item_Equipped") .. ")", 1.0, 1.0, 1.0, 1.0);
     end
 
     DoTooltipClothing(objTooltip, item, layoutTooltip)
@@ -116,15 +117,18 @@ function SetItemWithComparison(newItemValue, previousItemValue, label, layoutIte
             layoutItem:setLabel(getText(label) .. ":", 1.0, 1.0, 0.8, 1.0);
             if newItemValue > previousItemValue then
                 layoutItem:setValue(string.format("%." .. decimal .. "f", newItemValue) .. " (+" ..
-                                        string.format("%." .. decimal .. "f", newItemValue - previousItemValue) .. ")",
+                    string.format("%." .. decimal .. "f", newItemValue - previousItemValue) .. ")",
                     colorZero, colorOne, 0.0, 1.0);
             else
                 layoutItem:setValue(string.format("%." .. decimal .. "f", newItemValue) .. " (-" ..
-                                        string.format("%." .. decimal .. "f", previousItemValue - newItemValue) .. ")",
+                    string.format("%." .. decimal .. "f", previousItemValue - newItemValue) .. ")",
                     colorOne, colorZero, 0.0, 1.0);
             end
         end
     elseif newItemValue ~= 0.0 then
+        if newItemValue == 1 and (label == "Tooltip_RunSpeedModifier" or label == "Tooltip_CombatSpeedModifier") then
+            return;
+        end
         SetItemWithoutComparison(newItemValue, label, layoutItem, layoutTooltip, decimal);
     end
 end
@@ -141,6 +145,74 @@ function SetItemInfoAsText(newItemValue, label, layoutItem, layoutTooltip)
     layoutItem:setValue(newItemValue, 1.0, 1.0, 1.0, 1.0);
 end
 
+function RenderTooltip(self, offsetX, offsetY)
+    local mx = getMouseX() + 24 + offsetX;
+    local my = getMouseY() + 24 + offsetY;
+    if not self.followMouse then
+        mx = self:getX()
+        my = self:getY()
+        if self.anchorBottomLeft then
+            mx = self.anchorBottomLeft.x
+            my = self.anchorBottomLeft.y
+        end
+    end
+
+    self.tooltip:setX(mx + 11);
+    self.tooltip:setY(my);
+
+    self.tooltip:setWidth(50)
+    self.tooltip:setMeasureOnly(true)
+
+    if self.item:IsClothing() then
+        bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
+    else
+        self.item:DoTooltip(self.tooltip);
+    end
+
+    self.tooltip:setMeasureOnly(false)
+
+    -- clampy x, y
+
+    local myCore = getCore();
+    local maxX = myCore:getScreenWidth();
+    local maxY = myCore:getScreenHeight();
+
+    local tw = self.tooltip:getWidth();
+    local th = self.tooltip:getHeight();
+
+    self.tooltip:setX(math.max(0, math.min(mx + 11, maxX - tw - 1)));
+    if not self.followMouse and self.anchorBottomLeft then
+        self.tooltip:setY(math.max(0, math.min(my - th, maxY - th - 1)));
+    else
+        self.tooltip:setY(math.max(0, math.min(my, maxY - th - 1)));
+    end
+
+    self:setX(self.tooltip:getX() - 11);
+    self:setY(self.tooltip:getY());
+    self:setWidth(tw + 11);
+    self:setHeight(th);
+
+    if self.followMouse then
+        self:adjustPositionToAvoidOverlap({
+            x = mx - 24 * 2,
+            y = my - 24 * 2,
+            width = 24 * 2,
+            height = 24 * 2
+        })
+    end
+
+    self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r,
+        self.backgroundColor.g, self.backgroundColor.b);
+    self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
+        self.borderColor.b);
+
+    if self.item:IsClothing() then
+        bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
+    else
+        self.item:DoTooltip(self.tooltip);
+    end
+end
+
 function ISToolTipInv:bcic_render()
     if not self.item:IsClothing() then
         original_render(self);
@@ -149,71 +221,7 @@ function ISToolTipInv:bcic_render()
 
     -- we render the tool tip for inventory item only if there's no context menu showed
     if not ISContextMenu.instance or not ISContextMenu.instance.visibleCheck then
-        local mx = getMouseX() + 24;
-        local my = getMouseY() + 24;
-        if not self.followMouse then
-            mx = self:getX()
-            my = self:getY()
-            if self.anchorBottomLeft then
-                mx = self.anchorBottomLeft.x
-                my = self.anchorBottomLeft.y
-            end
-        end
-
-        self.tooltip:setX(mx + 11);
-        self.tooltip:setY(my);
-
-        self.tooltip:setWidth(50)
-        self.tooltip:setMeasureOnly(true)
-
-        if self.item:IsClothing() then
-            bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
-        else
-            self.item:DoTooltip(self.tooltip);
-        end
-
-        self.tooltip:setMeasureOnly(false)
-
-        -- clampy x, y
-
-        local myCore = getCore();
-        local maxX = myCore:getScreenWidth();
-        local maxY = myCore:getScreenHeight();
-
-        local tw = self.tooltip:getWidth();
-        local th = self.tooltip:getHeight();
-
-        self.tooltip:setX(math.max(0, math.min(mx + 11, maxX - tw - 1)));
-        if not self.followMouse and self.anchorBottomLeft then
-            self.tooltip:setY(math.max(0, math.min(my - th, maxY - th - 1)));
-        else
-            self.tooltip:setY(math.max(0, math.min(my, maxY - th - 1)));
-        end
-
-        self:setX(self.tooltip:getX() - 11);
-        self:setY(self.tooltip:getY());
-        self:setWidth(tw + 11);
-        self:setHeight(th);
-
-        if self.followMouse then
-            self:adjustPositionToAvoidOverlap({
-                x = mx - 24 * 2,
-                y = my - 24 * 2,
-                width = 24 * 2,
-                height = 24 * 2
-            })
-        end
-
-        self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r,
-            self.backgroundColor.g, self.backgroundColor.b);
-        self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
-            self.borderColor.b);
-
-        if self.item:IsClothing() then
-            bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
-        else
-            self.item:DoTooltip(self.tooltip);
-        end
+        RenderTooltip(self, 0, 0);
     end
 end
 

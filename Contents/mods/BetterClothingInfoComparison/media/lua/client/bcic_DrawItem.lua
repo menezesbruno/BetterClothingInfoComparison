@@ -34,13 +34,27 @@ function DrawItemAsText(self)
 end
 
 function DrawItemAsNumber(self)
-    if self.newItemValue ~= 1 and (self.label ~= "Tooltip_RunSpeedModifier" or self.label ~= "Tooltip_CombatSpeedModifier") then
-        if self.isEquipped and self.newItemValue ~= 0.0 then
+    if self.label == "Tooltip_RunSpeedModifier" or self.label == "Tooltip_CombatSpeedModifier" then
+        if self.isEquipped and self.newItemValue ~= 1.0 then
             SetItemWithoutComparison(self.newItemValue, self.label, self.layoutItem, self.layoutTooltip, self
                 .decimal);
-        elseif not self.isEquipped then
+        end
+        if not self.isEquipped then
             SetItemWithComparison(self.newItemValue, self.previousItemValue, self.label, self.layoutItem,
                 self.layoutTooltip, self.decimal, self.reverse);
         end
+        return;
+    end
+
+    if self.isEquipped and self.newItemValue ~= 0.0 then
+        SetItemWithoutComparison(self.newItemValue, self.label, self.layoutItem, self.layoutTooltip, self
+            .decimal);
+        return;
+    end
+
+    if not self.isEquipped then
+        SetItemWithComparison(self.newItemValue, self.previousItemValue, self.label, self.layoutItem,
+            self.layoutTooltip, self.decimal, self.reverse);
+        return;
     end
 end
