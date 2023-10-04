@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-09-30)
+-- version: 0.2a (2023-10-03)
 -- based on: 41+
 
 require "ISUI/ISToolTipInv"
@@ -202,7 +202,7 @@ function RenderTooltip(self, offsetX, offsetY)
     end
 
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r,
-    self.backgroundColor.g, self.backgroundColor.b);
+        self.backgroundColor.g, self.backgroundColor.b);
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b);
 
