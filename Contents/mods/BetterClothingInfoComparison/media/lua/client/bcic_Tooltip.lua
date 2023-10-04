@@ -163,8 +163,8 @@ function RenderTooltip(self, offsetX, offsetY)
     self.tooltip:setWidth(50)
     self.tooltip:setMeasureOnly(true)
 
-    if self.item:IsClothing() then
-        bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
+    if self.item ~= nil and self.tooltip ~= nil and self.item:IsClothing() then
+        bcic_DoTooltip(self.tooltip, self.item);
     else
         self.item:DoTooltip(self.tooltip);
     end
@@ -206,8 +206,8 @@ function RenderTooltip(self, offsetX, offsetY)
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b);
 
-    if self.item:IsClothing() then
-        bcic_DoTooltip(self.tooltip, self.item); -- CONSEGUIR PEGAR O SELF.ITEM DENTRO DO DoTooltip PARA PODERMOS ELIMINAR ESSE RENDER
+    if self.item ~= nil and self.tooltip ~= nil and self.item:IsClothing() then
+        bcic_DoTooltip(self.tooltip, self.item);
     else
         self.item:DoTooltip(self.tooltip);
     end
