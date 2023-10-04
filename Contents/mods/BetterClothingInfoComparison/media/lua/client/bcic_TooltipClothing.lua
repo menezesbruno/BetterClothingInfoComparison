@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-10-03)
+-- version: 0.2a (2023-10-04)
 -- based on: 41+
 
 function DoTooltipClothing(objTooltip, item, layoutTooltip)
@@ -67,24 +67,27 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
             BCIC_SETTINGS.options.ShowWetnessProgressBar);
     end
     -- End ProgressBar
-
+    
     if not item:isEquipped() and objTooltip:getCharacter() ~= nil then
         local wornItems = objTooltip:getCharacter():getWornItems();
-        for i = 0, wornItems:size() - 1 do
-            local wornItem = wornItems:get(i);
-            if (item:getBodyLocation() == wornItem:getLocation()) or
-                wornItems:getBodyLocationGroup():isExclusive(item:getBodyLocation(), wornItem:getLocation()) then
-                previousItemHolesNumber = previousItemHolesNumber + wornItem:getItem():getHolesNumber();
-                previousItemCondition = previousItemCondition + wornItem:getItem():getCondition();
-                previousItemInsulation = previousItemInsulation + wornItem:getItem():getInsulation();
-                previousItemWindResistance = previousItemWindResistance + wornItem:getItem():getWindresistance();
-                previousItemWaterResistance = previousItemWaterResistance + wornItem:getItem():getWaterResistance();
-                previousItemBiteDefense = previousItemBiteDefense + wornItem:getItem():getBiteDefense();
-                previousItemScratchDefense = previousItemScratchDefense + wornItem:getItem():getScratchDefense();
-                previousItemBulletDefense = previousItemBulletDefense + wornItem:getItem():getBulletDefense();
-                previousItemRunSpeedModifier = previousItemRunSpeedModifier + wornItem:getItem():getRunSpeedModifier();
-                previousItemCombatSpeedModifier = previousItemCombatSpeedModifier +
-                    wornItem:getItem():getCombatSpeedModifier();
+        local bodyLocationGroup = wornItems:getBodyLocationGroup();
+        local location = item:IsClothing() and item:getBodyLocation() or item:canBeEquipped();
+
+        for i = 1, wornItems:size() do
+            local wornItemInventory = wornItems:get(i - 1);
+            local wornItem = wornItemInventory:getItem();
+            if wornItem:IsClothing() and (item:getBodyLocation() == wornItemInventory:getLocation() or
+                bodyLocationGroup:isExclusive(location, wornItemInventory:getLocation())) then
+                previousItemHolesNumber = previousItemHolesNumber + wornItem:getHolesNumber();
+                previousItemCondition = previousItemCondition + wornItem:getCondition();
+                previousItemInsulation = previousItemInsulation + wornItem:getInsulation();
+                previousItemWindResistance = previousItemWindResistance + wornItem:getWindresistance();
+                previousItemWaterResistance = previousItemWaterResistance + wornItem:getWaterResistance();
+                previousItemBiteDefense = previousItemBiteDefense + wornItem:getBiteDefense();
+                previousItemScratchDefense = previousItemScratchDefense + wornItem:getScratchDefense();
+                previousItemBulletDefense = previousItemBulletDefense + wornItem:getBulletDefense();
+                previousItemRunSpeedModifier = previousItemRunSpeedModifier + wornItem:getRunSpeedModifier();
+                previousItemCombatSpeedModifier = previousItemCombatSpeedModifier + wornItem:getCombatSpeedModifier();
             end
         end
     end
