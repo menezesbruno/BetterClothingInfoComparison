@@ -73,7 +73,7 @@ function bcic_DoTooltip(objTooltip, item)
 
     if item:getTooltip() ~= nil then
         layout = layoutTooltip:addItem();
-        layout:setLabel(getText(item.tooltip), 1.0, 1.0, 0.8, 1.0);
+        layout:setLabel(getText(item:getTooltip()), 1.0, 1.0, 0.8, 1.0);
     end
 
     var4 = layoutTooltip:render(5, var4, objTooltip);
@@ -202,7 +202,7 @@ function RenderTooltip(self, offsetX, offsetY)
     end
 
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r,
-        self.backgroundColor.g, self.backgroundColor.b);
+    self.backgroundColor.g, self.backgroundColor.b);
     self:drawRectBorder(0, 0, self.width, self.height, self.borderColor.a, self.borderColor.r, self.borderColor.g,
         self.borderColor.b);
 
