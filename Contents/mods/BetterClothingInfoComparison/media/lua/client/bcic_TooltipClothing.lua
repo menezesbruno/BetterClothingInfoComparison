@@ -34,6 +34,17 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
     local previousItemRunSpeedModifier = 0.0;
     local previousItemCombatSpeedModifier = 0.0;
 
+    -- Item Icon
+    local iconPositionX = 11;
+    local iconPositionY = 11;
+    local iconWidth = 50;
+    local iconHeight = 55;
+    local iconTransparency = 1;
+
+    local newItemIcon = ItemIcon:New(item:getTex(), iconPositionX, iconPositionY, iconWidth, iconHeight, iconTransparency);
+    newItemIcon:Render(objTooltip, true);
+
+
     -- ProgressBar
     local conditionState = newItemCondition / item:getConditionMax();
     DrawProgressBar(conditionState, "Tooltip_weapon_Condition", layoutItem, layoutTooltip,
@@ -74,6 +85,11 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
             local wornItem = wornItems:get(i);
             if (item:getBodyLocation() == wornItem:getLocation()) or
                 wornItems:getBodyLocationGroup():isExclusive(item:getBodyLocation(), wornItem:getLocation()) then
+                local previousItemIcon = ItemIcon:New(wornItem:getItem():getTex(), iconPositionX + (i * 50),
+                    iconPositionY,
+                    iconWidth, iconHeight, iconTransparency);
+                previousItemIcon:Render(objTooltip, true);
+
                 previousItemHolesNumber = previousItemHolesNumber + wornItem:getItem():getHolesNumber();
                 previousItemCondition = previousItemCondition + wornItem:getItem():getCondition();
                 previousItemInsulation = previousItemInsulation + wornItem:getItem():getInsulation();
