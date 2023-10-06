@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-10-04)
+-- version: 0.2a (2023-10-06)
 -- based on: 41+
 
 function DoTooltipClothing(objTooltip, item, layoutTooltip)
@@ -67,17 +67,22 @@ function DoTooltipClothing(objTooltip, item, layoutTooltip)
             BCIC_SETTINGS.options.ShowWetnessProgressBar);
     end
     -- End ProgressBar
-    
+
     if not item:isEquipped() and objTooltip:getCharacter() ~= nil then
         local wornItems = objTooltip:getCharacter():getWornItems();
         local bodyLocationGroup = wornItems:getBodyLocationGroup();
-        local location = item:IsClothing() and item:getBodyLocation() or item:canBeEquipped();
+        local location = item:getBodyLocation();
 
         for i = 1, wornItems:size() do
             local wornItemInventory = wornItems:get(i - 1);
             local wornItem = wornItemInventory:getItem();
-            if wornItem:IsClothing() and (item:getBodyLocation() == wornItemInventory:getLocation() or
-                bodyLocationGroup:isExclusive(location, wornItemInventory:getLocation())) then
+            local bodyLocationComparer = false;
+
+            if bodyLocationGroup ~= nil then
+                bodyLocationComparer = bodyLocationGroup:isExclusive(location, wornItemInventory:getLocation());
+            end
+
+            if wornItem:IsClothing() and (location == wornItemInventory:getLocation() or bodyLocationComparer) then
                 previousItemHolesNumber = previousItemHolesNumber + wornItem:getHolesNumber();
                 previousItemCondition = previousItemCondition + wornItem:getCondition();
                 previousItemInsulation = previousItemInsulation + wornItem:getInsulation();
