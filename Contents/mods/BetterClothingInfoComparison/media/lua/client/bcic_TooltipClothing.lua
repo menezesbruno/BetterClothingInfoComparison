@@ -1,5 +1,5 @@
 -- author: Bruno Menezes & Fred Davin
--- version: 0.2a (2023-10-06)
+-- version: 0.2a (2023-10-07)
 -- based on: 41+
 
 function DoTooltipClothing(objTooltip, item, layoutTooltip)
